@@ -11,6 +11,16 @@ class CallAgentScene : public MXScene {
     CONNECTED,
   };
 
+  inline void setAgent(Agent *value) {
+    agent = value;
+    if (nameLabel) {
+      nameLabel->text(agent->name);
+    }
+    if (avatarImage) {
+      avatarImage->src(agent->avatar);
+    }
+  }
+
  protected:
   ConnectionStatus connectionStatus = CONNECTING;
   Agent *agent = &agent_amy;
@@ -29,3 +39,5 @@ class CallAgentScene : public MXScene {
   void onUpdate() override;
   void setConnectionStatus(ConnectionStatus status);
 };
+
+extern CallAgentScene *callAgentScene;

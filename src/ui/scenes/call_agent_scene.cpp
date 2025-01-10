@@ -1,6 +1,10 @@
 #include "call_agent_scene.h"
 
+#include "ui/scenes/select_agent_scene.h"
 #include "utils/format_time.h"
+
+LV_IMAGE_DECLARE(img_hang_up);
+LV_IMAGE_DECLARE(img_hang_up_active);
 
 void CallAgentScene::onInit() {
   MXScene::onInit();
@@ -11,8 +15,7 @@ void CallAgentScene::onInit() {
   ring = root()->add_object();
   avatarImage = root()->add_image(agent->avatar);
   callButton = root()->add_button();
-  callImage = callButton->add_image(LV_SYMBOL_CALL)->center()->scale(2);
-  lv_image_set_rotation(callImage->lv_object(), 900);
+  callImage = callButton->add_image(&img_hang_up)->center();
 }
 
 void CallAgentScene::onLayout() {
@@ -25,12 +28,13 @@ void CallAgentScene::onLayout() {
       ->border(4, lv_color_white())
       ->opacity(0.6);
   avatarImage->size(160)->center();
-  int32_t buttonSize = 80 - 8;
+  int32_t buttonSize = 80;
   callButton->rounded_full(buttonSize)
       ->bg(rgb(0xFF3B2F))
       ->border(4, rgb(0xFF3B2F))
       ->center_x()
-      ->y(height() - buttonSize - 12);
+      ->y(height() - buttonSize - 12)
+      ->onClick([this](MXEvent *e) { selectAgentScene->show(); });
 }
 
 void CallAgentScene::onShown() {
@@ -66,7 +70,7 @@ void CallAgentScene::setConnectionStatus(ConnectionStatus status) {
     case CONNECTED:
       callStartTime = time(nullptr);
       statusLabel->text("00:00");
-      callButton->text(rgb(0xFF3B2F));
+      callImage->src(&img_hang_up_active);
       callButton->bg(lv_color_white());
       callButton->border(4, rgb(0xc45c57));
 
@@ -76,11 +80,13 @@ void CallAgentScene::setConnectionStatus(ConnectionStatus status) {
       lv_anim_set_values(&fadeIn, 0, 255);
       lv_anim_set_duration(&fadeIn, 400);
       lv_anim_set_path_cb(&fadeIn, lv_anim_path_ease_out);
-      lv_anim_set_exec_cb(&fadeIn, [](void* obj, int32_t opacity) {
-        lv_obj_set_style_bg_opa((lv_obj_t*)obj, opacity, LV_PART_MAIN);
+      lv_anim_set_exec_cb(&fadeIn, [](void *obj, int32_t opacity) {
+        lv_obj_set_style_bg_opa((lv_obj_t *)obj, opacity, LV_PART_MAIN);
       });
       lv_anim_start(&fadeIn);
 
       break;
   }
 }
+
+CallAgentScene *callAgentScene = new CallAgentScene();

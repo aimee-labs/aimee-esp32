@@ -6,7 +6,8 @@
 #include <lvgl.h>
 #include <mx.h>
 
-void app_main();
+void app_setup();
+void app_loop();
 
 void hal_setup() {
   Serial.begin(115200);
@@ -21,7 +22,7 @@ void hal_setup() {
 void setup() {
   hal_setup();
   lv_setup();
-  app_main();
+  app_setup();
 }
 
 time_t last_serial_output = 0;
@@ -38,6 +39,8 @@ void serial_loop() {
 
 void loop() {
   serial_loop();
+
+  app_loop();
   mx_loop();
 
   // Always keep `lv_loop()` at the end of the loop

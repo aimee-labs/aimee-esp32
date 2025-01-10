@@ -37,3 +37,5 @@ void WiFiConnectionScene::onUpdate() {
     label->text("WiFi connected");
   }
 }
+
+WiFiConnectionScene *wifiConnectionScene = new WiFiConnectionScene();

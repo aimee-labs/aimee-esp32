@@ -15,3 +15,5 @@ class WiFiConnectionScene : public MXScene {
   void onShown() override;
   void onUpdate() override;
 };
+
+extern WiFiConnectionScene* wifiConnectionScene;

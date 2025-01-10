@@ -13,4 +13,4 @@ extern Agent agent_lisa;
 extern Agent agent_sam;
 extern Agent agent_tony;
 
-extern const Agent agents[4];
+extern Agent agents[4];

@@ -31,7 +31,7 @@ Agent agent_tony = {
     &img_avatar_tony,
 };
 
-const Agent agents[] = {
+Agent agents[] = {
     agent_amy,
     agent_lisa,
     agent_sam,

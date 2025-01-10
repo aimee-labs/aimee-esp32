@@ -21,12 +21,20 @@ void CallAgentScene::onInit() {
 void CallAgentScene::onLayout() {
   MXScene::onLayout();
 
-  statusLabel->center_x(0, 28);
-  nameLabel->center_x(0, 54);
-  ring->rounded_full(160 - 8)
-      ->center()
-      ->border(4, lv_color_white())
-      ->opacity(0.6);
+  if (height() >= 300) {
+    // Large screen
+    statusLabel->center_x(0, 28);
+    nameLabel->center_x(0, 54);
+    ring->rounded_full(144);
+  } else {
+    // Small screen
+    statusLabel->center_x(0, 12);
+    nameLabel->center_x(0, 40);
+    ring->rounded_full(120);
+  }
+
+  ring->center()->border(4, lv_color_white())->opacity(0.6);
+
   avatarImage->size(160)->center();
   int32_t buttonSize = 80;
   callButton->rounded_full(buttonSize)

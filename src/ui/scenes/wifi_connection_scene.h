@@ -12,10 +12,6 @@ class WiFiConnectionScene : public MXScene {
   WiFiMulti* wifiMulti;
 
   void onInit() override;
-
-  void dispose() override;
-
   void onShown() override;
-
   void onUpdate() override;
 };

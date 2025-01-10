@@ -6,23 +6,16 @@
 void WiFiConnectionScene::onInit() {
   MXScene::onInit();
 
-  icon = &root()
-              ->label(LV_SYMBOL_WIFI, MX_FONT_SIZE_3XL)
-              .center(0, -21)
-              .text_primary();
+  icon = root()
+             ->add_label(LV_SYMBOL_WIFI, MX_FONT_SIZE_3XL)
+             ->center(0, -21)
+             ->text_primary();
   wifiMulti = new WiFiMulti();
 
-  label = &root()
-               ->label("Connecting to WiFi...", MX_FONT_SIZE_XL)
-               .center(0, 21)
-               .text_center();
-}
-
-void WiFiConnectionScene::dispose() {
-  MXScene::dispose();
-
-  delete label;
-  label = nullptr;
+  label = root()
+              ->add_label("Connecting to WiFi...", MX_FONT_SIZE_XL)
+              ->center(0, 21)
+              ->text_center();
 }
 
 void WiFiConnectionScene::onShown() {

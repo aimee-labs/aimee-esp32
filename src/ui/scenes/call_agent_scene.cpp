@@ -66,6 +66,10 @@ void CallAgentScene::setConnectionStatus(ConnectionStatus status) {
   switch (status) {
     case CONNECTING:
       statusLabel->text("Connecting...");
+      callImage->src(&img_hang_up);
+      callButton->bg(rgb(0xFF3B2F));
+      callButton->border(4, rgb(0xFF3B2F));
+      root()->bg_opacity(0);
       break;
     case CONNECTED:
       callStartTime = time(nullptr);

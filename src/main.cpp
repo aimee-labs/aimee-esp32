@@ -2,8 +2,8 @@
 #include <WiFi.h>
 #include <audio.h>
 #include <display.h>
-#include <lv_integration.h>
 #include <lvgl.h>
+#include <lvgl_port_v9.h>
 #include <mx.h>
 
 void app_setup();

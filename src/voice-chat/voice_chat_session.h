@@ -1,33 +1,45 @@
 #pragma once
 
+#include <ArduinoJson.h>
+#include <ArduinoWebsockets.h>
+
+using namespace websockets;
+
 class VoiceChatSession {
  public:
   enum ConnectionState {
-    CONNECTION_STATE_INITIAL,
     CONNECTION_STATE_CONNECTING,
     CONNECTION_STATE_CONNECTED,
+    CONNECTION_STATE_DISCONNECTING,
     CONNECTION_STATE_DISCONNECTED,
   };
 
   enum SessionState {
+    SESSION_STATE_INITIAL,
     SESSION_STATE_IDLE,
     SESSION_STATE_USER_SPEAKING,
     SESSION_STATE_AGENT_SPEAKING,
   };
 
-  VoiceChatSession(const char* agentId);
+  VoiceChatSession(WebsocketsClient* ws);
+  ~VoiceChatSession();
 
-  inline ConnectionState connectionState() const { return _connectionState; }
+  inline bool isReady() {
+    return _connectionState == CONNECTION_STATE_CONNECTED &&
+           _state != SESSION_STATE_INITIAL;
+  }
+
   inline SessionState state() const { return _state; }
+  inline ConnectionState connectionState() const { return _connectionState; }
 
   void start();
   void stop();
   void update();
 
  private:
-  const char* _agentId;
-  ConnectionState _connectionState = CONNECTION_STATE_INITIAL;
-  SessionState _state = SESSION_STATE_IDLE;
+  ConnectionState _connectionState = CONNECTION_STATE_CONNECTING;
+  SessionState _state = SESSION_STATE_INITIAL;
+  WebsocketsClient* _ws;
 
   inline void _setState(SessionState state) {
     if (_state != state) {
@@ -40,4 +52,10 @@ class VoiceChatSession {
       _connectionState = state;
     }
   }
+
+  void _sendStartCommand();
+
+  void _handleEventMessage(JsonDocument& eventJSON);
+  void _handleBinaryMessage(uint8_t* data, size_t size);
+  void _handleSessionStartedEvent();
 };

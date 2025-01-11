@@ -4,13 +4,10 @@
 
 #include "agents/agents.h"
 
+class VoiceChatSession;
+
 class CallAgentScene : public MXScene {
  public:
-  enum ConnectionStatus {
-    CONNECTING,
-    CONNECTED,
-  };
-
   inline void setAgent(Agent *value) {
     agent = value;
     if (nameLabel) {
@@ -22,7 +19,6 @@ class CallAgentScene : public MXScene {
   }
 
  protected:
-  ConnectionStatus connectionStatus = CONNECTING;
   Agent *agent = &agent_amy;
   time_t connectionStartTime = 0;
 
@@ -37,7 +33,11 @@ class CallAgentScene : public MXScene {
   void onLayout() override;
   void onShown() override;
   void onUpdate() override;
-  void setConnectionStatus(ConnectionStatus status);
+
+ private:
+  VoiceChatSession *_session = nullptr;
+  bool _readyState = false;
+  void _setReadyState(bool readyState);
 };
 
 extern CallAgentScene *callAgentScene;

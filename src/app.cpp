@@ -4,7 +4,7 @@
 #include "ui/scenes/select_agent_scene.h"
 #include "ui/scenes/wifi_connection_scene.h"
 
-void app_setup() { selectAgentScene->show(); }
+void app_setup() { wifiConnectionScene->show(); }
 
 void app_loop() {
   if (WiFi.status() == WL_CONNECTED &&

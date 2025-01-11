@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.html": "html",
+    ".env": "shellscript",
+    "*.json": "jsonc",
+    "new": "cpp"
+  }
+}

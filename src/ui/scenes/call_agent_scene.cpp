@@ -2,9 +2,13 @@
 
 #include "ui/scenes/select_agent_scene.h"
 #include "utils/format_time.h"
+#include "voice-chat/voice_chat_client.h"
+#include "voice-chat/voice_chat_session.h"
 
 LV_IMAGE_DECLARE(img_hang_up);
 LV_IMAGE_DECLARE(img_hang_up_active);
+
+VoiceChatClient voiceChatClient;
 
 void CallAgentScene::onInit() {
   MXScene::onInit();
@@ -42,62 +46,65 @@ void CallAgentScene::onLayout() {
       ->border(4, rgb(0xFF3B2F))
       ->center_x()
       ->y(height() - buttonSize - 12)
-      ->onClick([this](MXEvent *e) { selectAgentScene->show(); });
+      ->onClick([this](MXEvent *e) {
+        if (_session) {
+          _session->stop();
+          selectAgentScene->show();
+        }
+      });
 }
 
 void CallAgentScene::onShown() {
   MXScene::onShown();
 
-  connectionStartTime = millis();
-  setConnectionStatus(CONNECTING);
+  _session = voiceChatClient.startSession(agent->agentId);
 }
 
 void CallAgentScene::onUpdate() {
   MXScene::onUpdate();
 
-  // TODO: remove this
-  if (connectionStatus == CONNECTING && millis() - connectionStartTime > 1500) {
-    connectionStartTime = millis();
-    setConnectionStatus(CONNECTED);
-  }
-  // TODO: end of remove this
+  voiceChatClient.update();
 
-  if (connectionStatus == CONNECTED) {
+  bool readyState = _session != nullptr && _session->isReady();
+
+  if (readyState) {
     statusLabel->text(formatTimeSpan(millis() - connectionStartTime));
+  } else {
+    statusLabel->text("Calling...");
   }
+
+  _setReadyState(readyState);
 }
 
-void CallAgentScene::setConnectionStatus(ConnectionStatus status) {
-  if (connectionStatus == status) return;
+void CallAgentScene::_setReadyState(bool readyState) {
+  if (_readyState == readyState) return;
 
-  connectionStatus = status;
-  switch (status) {
-    case CONNECTING:
-      statusLabel->text("Calling...");
-      callImage->src(&img_hang_up);
-      callButton->bg(rgb(0xFF3B2F));
-      callButton->border(4, rgb(0xFF3B2F));
-      root()->bg_opacity(0);
-      break;
-    case CONNECTED:
-      connectionStartTime = millis();
-      statusLabel->text("00:00");
-      callImage->src(&img_hang_up_active);
-      callButton->bg(lv_color_white());
-      callButton->border(4, rgb(0xc45c57));
+  _readyState = readyState;
 
-      lv_anim_t fadeIn;
-      lv_anim_init(&fadeIn);
-      lv_anim_set_var(&fadeIn, root()->lv_object());
-      lv_anim_set_values(&fadeIn, 0, 255);
-      lv_anim_set_duration(&fadeIn, 200);
-      lv_anim_set_path_cb(&fadeIn, lv_anim_path_ease_out);
-      lv_anim_set_exec_cb(&fadeIn, [](void *obj, int32_t opacity) {
-        lv_obj_set_style_bg_opa((lv_obj_t *)obj, opacity, LV_PART_MAIN);
-      });
-      lv_anim_start(&fadeIn);
+  if (!_readyState) {
+    statusLabel->text("Calling...");
+    callImage->src(&img_hang_up);
+    callButton->bg(rgb(0xFF3B2F));
+    callButton->border(4, rgb(0xFF3B2F));
+    root()->bg_opacity(0);
+  } else {
+    statusLabel->text("00:00");
+    callImage->src(&img_hang_up_active);
+    callButton->bg(lv_color_white());
+    callButton->border(4, rgb(0xc45c57));
 
-      break;
+    lv_anim_t fadeIn;
+    lv_anim_init(&fadeIn);
+    lv_anim_set_var(&fadeIn, root()->lv_object());
+    lv_anim_set_values(&fadeIn, 0, 255);
+    lv_anim_set_duration(&fadeIn, 200);
+    lv_anim_set_path_cb(&fadeIn, lv_anim_path_ease_out);
+    lv_anim_set_exec_cb(&fadeIn, [](void *obj, int32_t opacity) {
+      lv_obj_set_style_bg_opa((lv_obj_t *)obj, opacity, LV_PART_MAIN);
+    });
+    lv_anim_start(&fadeIn);
+
+    connectionStartTime = millis();
   }
 }
 

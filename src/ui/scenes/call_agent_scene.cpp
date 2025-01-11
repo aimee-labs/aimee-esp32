@@ -48,7 +48,7 @@ void CallAgentScene::onLayout() {
 void CallAgentScene::onShown() {
   MXScene::onShown();
 
-  callStartTime = millis();
+  connectionStartTime = millis();
   setConnectionStatus(CONNECTING);
 }
 
@@ -56,14 +56,14 @@ void CallAgentScene::onUpdate() {
   MXScene::onUpdate();
 
   // TODO: remove this
-  if (connectionStatus == CONNECTING && millis() - callStartTime > 1500) {
-    callStartTime = millis();
+  if (connectionStatus == CONNECTING && millis() - connectionStartTime > 1500) {
+    connectionStartTime = millis();
     setConnectionStatus(CONNECTED);
   }
   // TODO: end of remove this
 
   if (connectionStatus == CONNECTED) {
-    statusLabel->text(formatTimeSpan(millis() - callStartTime));
+    statusLabel->text(formatTimeSpan(millis() - connectionStartTime));
   }
 }
 
@@ -73,14 +73,14 @@ void CallAgentScene::setConnectionStatus(ConnectionStatus status) {
   connectionStatus = status;
   switch (status) {
     case CONNECTING:
-      statusLabel->text("Connecting...");
+      statusLabel->text("Calling...");
       callImage->src(&img_hang_up);
       callButton->bg(rgb(0xFF3B2F));
       callButton->border(4, rgb(0xFF3B2F));
       root()->bg_opacity(0);
       break;
     case CONNECTED:
-      callStartTime = time(nullptr);
+      connectionStartTime = millis();
       statusLabel->text("00:00");
       callImage->src(&img_hang_up_active);
       callButton->bg(lv_color_white());

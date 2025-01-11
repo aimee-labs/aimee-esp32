@@ -24,7 +24,7 @@ class CallAgentScene : public MXScene {
  protected:
   ConnectionStatus connectionStatus = CONNECTING;
   Agent *agent = &agent_amy;
-  time_t callStartTime = 0;
+  time_t connectionStartTime = 0;
 
   MXObject *statusLabel;
   MXObject *nameLabel;

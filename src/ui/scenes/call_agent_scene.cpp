@@ -90,7 +90,7 @@ void CallAgentScene::setConnectionStatus(ConnectionStatus status) {
       lv_anim_init(&fadeIn);
       lv_anim_set_var(&fadeIn, root()->lv_object());
       lv_anim_set_values(&fadeIn, 0, 255);
-      lv_anim_set_duration(&fadeIn, 400);
+      lv_anim_set_duration(&fadeIn, 200);
       lv_anim_set_path_cb(&fadeIn, lv_anim_path_ease_out);
       lv_anim_set_exec_cb(&fadeIn, [](void *obj, int32_t opacity) {
         lv_obj_set_style_bg_opa((lv_obj_t *)obj, opacity, LV_PART_MAIN);
